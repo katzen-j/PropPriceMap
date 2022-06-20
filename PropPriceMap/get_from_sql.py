@@ -4,7 +4,7 @@ import os
 
 # dataframe column headers
 df_cols = ['ID', 'price', 'date', 'postcode', 'poan', 'street', 'locality',
-       'town_city', 'district', 'county', 'latitude', 'longitude']
+       'town_city', 'county', 'latitude', 'longitude']
 
 def get_user_input(user_input):
     """
@@ -12,7 +12,7 @@ def get_user_input(user_input):
     """
     user_input = user_input.upper()
     # create connection to SQL database
-    conn = sqlite3.connect('../raw_data/gov_housing_data_SQL')
+    conn = sqlite3.connect('../SQL_data/gov_housing_data_lite')
     c = conn.cursor()  
 
     # first check for town/city:

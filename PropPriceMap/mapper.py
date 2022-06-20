@@ -8,80 +8,18 @@ from folium.features import DivIcon
 from branca.element import Figure
 from requests import post
 import matplotlib.pyplot as plt
-from PropPriceMap.get_from_sql import town_city_connect, locality_connect, postcode_connect
+from PropPriceMap.get_from_sql import get_user_input,town_city_connect, locality_connect, postcode_connect
 
-def mapper(localities,towncities):
+def mapper(localities,towncities,user_input):
     ''' run through the mapping process
     includes checks if town or city exists '''
 
-    # Determine postcode or towncity search
-    post_city = input("Search by town/city [0] or postcode [1]")
-    post_city = int(post_city)
+    city = get_user_input(user_input)
+    
+    if not isinstance(city, pd.DataFrame):
+        return "none"
 
-        #############################################################################
-        #  POSTCODE CHECKING
-        #############################################################################
-    if post_city == 1:
-        postcode_user = input("Please enter full postcode (with spaces) or first outward code (e.g. WD6):")
-        postcode_user = postcode_user.upper()
-        
-        # get postcode data from SQL
-        city = postcode_connect(postcode_user)
-        
-        # check if any value inside dataframe else return not found
-        if len(city) == 0:
-            return "Postcode not found, please try again"
-
-    else:
-        #############################################################################
-        #  TOWN CITY CHECKING
-        #############################################################################
-        # input town or city name then convert it to all uppper case
-        name = input("Enter town or city name > ")
-        name = name.upper()
-
-        # check if this is a valid name and keep in loop until
-        # valid name has been entered
-        file_list_locales = localities
-        file_list_towncities = towncities
-        # flag to determine if localities or towncities columns should be searched
-        # 1 for locales / 2 for towncities
-        tc_flag = 0
-
-        if name in file_list_locales:
-            print(f"{name} found")
-            tc_flag = 1
-        elif name in file_list_towncities:
-            print(f"{name} found")
-            tc_flag = 2
-        else:
-            print(f"{name} not found")
-            # stay in while loop until a valid name is provided
-            name_count = 0 # give user 3 tries
-            while not name in file_list_locales or not name in file_list_towncities and name_count < 2:
-                name = input("Please enter a valid town or city name > ")
-                name = name.upper()
-                name_count += 1
-                # exit if user has not typed in valid name 3 times
-                if name_count >= 2:
-                    return print("Could not find this town, please try again")
-            if name in file_list_locales:
-                tc_flag = 1
-            elif name in file_list_towncities:
-                tc_flag = 2
-            print(f"{name} found! Proceeding..")
-
-        # read in the selected city as a dataframe
-        if tc_flag == 1: # search localities
-            # city = gov_data_df[gov_data_df.locality == name]
-            city = locality_connect(name)
-            
-            
-        elif tc_flag == 2: # search towncities
-            # city = gov_data_df[gov_data_df.town_city == name]
-            city = town_city_connect(name)
-
-        #----------------------------------------------------------------------------
+    #----------------------------------------------------------------------------
     mean_price = city.price.mean()
     median_price = city.price.median()
     # get the midpoints of latitude and longitude for future mapping
@@ -129,15 +67,15 @@ def mapper(localities,towncities):
 
     fig.add_child(map)
 
-    mean_median_print = f"Average price: £{int(mean_price):,}  Median price: £{int(median_price):,}"
-    html_text = f'<div style="font-size: 10pt">{mean_median_print}</div>'
-    folium.map.Marker(
-        [max(city.latitude)-0.005, mid_lon],
-        icon=DivIcon(
-            icon_size=(350,36),
-            icon_anchor=(0,0),
-            html=html_text,
-            )
-        ).add_to(map)
+    # mean_median_print = f"Average price: £{int(mean_price):,}  Median price: £{int(median_price):,}"
+    # html_text = f'<div style="font-size: 10pt">{mean_median_print}</div>'
+    # folium.map.Marker(
+    #     [max(city.latitude)-0.005, mid_lon],
+    #     icon=DivIcon(
+    #         icon_size=(350,36),
+    #         icon_anchor=(0,0),
+    #         html=html_text,
+    #         )
+    #     ).add_to(map)
 
-    return fig #city_dict
+    return fig, [mean_price, median_price] #city_dict

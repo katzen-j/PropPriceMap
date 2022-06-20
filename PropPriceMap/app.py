@@ -5,9 +5,6 @@ import os
 from streamlit_folium import folium_static, st_folium
 import folium
 
-localities = set(pd.read_csv("../raw_data/localities.csv").locality)
-towncities = set(pd.read_csv("../raw_data/towncities.csv").town_city)
-
 st.markdown('''
 # Mapper
 ''')
@@ -20,7 +17,7 @@ user_input = st.text_input(label='Please enter a town/city or full postcode (wit
 # if st.button("Get results") or st.session_state.map_show:
 if user_input or st.session_state.map_show:
     # st.session_state.map_show = False
-    output = mapper(localities,towncities,user_input)
+    output = mapper(user_input)
     if output == "none":
         st.write(f"{user_input} not found in database, please try again")
     # elif st.session_state.map_show == True:

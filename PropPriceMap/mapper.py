@@ -10,7 +10,7 @@ from requests import post
 import matplotlib.pyplot as plt
 from PropPriceMap.get_from_sql import get_user_input,town_city_connect, locality_connect, postcode_connect
 
-def mapper(localities,towncities,user_input):
+def mapper(user_input):
     ''' run through the mapping process
     includes checks if town or city exists '''
 

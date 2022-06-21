@@ -1,5 +1,5 @@
 import streamlit as st
-from PropPriceMap.mapper import mapper
+from mapper import mapper
 import pandas as pd
 import os
 from streamlit_folium import folium_static, st_folium

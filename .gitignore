@@ -7,3 +7,4 @@ raw_data/
 **/__pycache__/
 .env
 raw_data/gov_housing_data_SQL
+.vscode/

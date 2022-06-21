@@ -2,7 +2,7 @@ import pandas as pd
 import folium
 from folium.features import DivIcon
 from branca.element import Figure
-from PropPriceMap.get_from_sql import get_user_input
+from get_from_sql import get_user_input
 
 def mapper(user_input):
     ''' run through the mapping process

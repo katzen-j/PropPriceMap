@@ -1,14 +1,8 @@
-from os.path import exists
-import os
-# from isort import file
 import pandas as pd
 import folium
-from folium import IFrame
 from folium.features import DivIcon
 from branca.element import Figure
-from requests import post
-import matplotlib.pyplot as plt
-from PropPriceMap.get_from_sql import get_user_input,town_city_connect, locality_connect, postcode_connect
+from PropPriceMap.get_from_sql import get_user_input
 
 def mapper(user_input):
     ''' run through the mapping process
@@ -41,7 +35,6 @@ def mapper(user_input):
     #########################################################
     #### MAPPING
     #########################################################
-    # fig, ax = plt.subplots()
     fig = Figure(width=800, height=600)
 
     map = folium.Map(location = [city_dict['mid_lat'], city_dict['mid_long']], zoom_start = 14)
@@ -54,7 +47,7 @@ def mapper(user_input):
                                 city_dict['city_df'].street,
                                 city_dict['city_df'].postcode,
                                 city_dict['city_df'].date):
-        # feature_group.add_child(folium.Marker(location=[lat,lng],popup=name))
+
         t_tip = [f"£{price:,}", f"{poan} {street}, {postcode}",date.split()[0]]
         feature_group.add_child(folium.Circle(location=[lat,lng],
                                             tooltip=t_tip,
@@ -67,15 +60,4 @@ def mapper(user_input):
 
     fig.add_child(map)
 
-    # mean_median_print = f"Average price: £{int(mean_price):,}  Median price: £{int(median_price):,}"
-    # html_text = f'<div style="font-size: 10pt">{mean_median_print}</div>'
-    # folium.map.Marker(
-    #     [max(city.latitude)-0.005, mid_lon],
-    #     icon=DivIcon(
-    #         icon_size=(350,36),
-    #         icon_anchor=(0,0),
-    #         html=html_text,
-    #         )
-    #     ).add_to(map)
-
-    return fig, [mean_price, median_price] #city_dict
+    return fig, [mean_price, median_price]
